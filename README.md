@@ -1,1 +1,1 @@
-# ENV790_TimeSeriesAnalysis_Sp2022
+# ENV790_TimeSeriesAnalisys_Sp2022
