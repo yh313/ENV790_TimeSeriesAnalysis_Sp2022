@@ -11,6 +11,10 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+```{r}
+tinytex::install_tinytex()
+
+```
 
 ## R Markdown
 
