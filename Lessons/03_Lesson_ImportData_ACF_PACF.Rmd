@@ -13,6 +13,7 @@ The first R code chunk is named **setup**. Here we are setting the options for R
 knitr::opts_chunk$set(echo = TRUE) 
 ```
 
+
 ## Loading packages and initializing
 
 It's useful to designate one code chunk to load packages on the beginning of the file. You can always add to this chunk as needed. But concentrate the packages needed on only one chunk.
@@ -29,13 +30,26 @@ For this first example we will import water inflow data for reservoirs in Brazil
 
 * *file = * : use this input to point to yoru data file. If it's on the same folder as your .Rmd then you only need to write the file name. But if it's on another folder you need to point to the path were file is located;
 * *header =* : if your file has a header you should set this to TRUE, o.w. FALSE;
-* *skip =* : if your file has rows explaining the data or any other rows on the top that need to be skipped you should just set skip to be equal to the number of row that should be skipped before reading the data. Mote that if header=TRUE, you should not skip the row with the header. The defaul is *skip=0*;
+* *skip =* : if your file has rows explaining the data or any other rows on the top that need to be skipped you should just set skip to be equal to the number of row that should be skipped before reading the data. Mote that if header=TRUE, you should not skip the row with the header. The default is *skip=0*;
 * *dec =* : define *dec="."* or *dec=","* depending on how it's defined on your set. The default is ".".
 
 ```{r}
 #Importing time series data from text file
 #I am calling it raw for now because it's data as it is in the file
+
+#Option 1: import using path
 raw_inflow_data <- read.table(file="/Users/lmm89/OneDrive/Duke_University/9_Spring2022/ENV790_TSA/Git_Repo/ENV790_TimeSeriesAnalysis_Sp2022_v2/Data/inflowtimeseries.txt",header=FALSE,skip=0)
+
+#Option 2: import using shortcut "." or ".."
+# the "." will point to the folder set as current directory
+# the ".." will point to your parent folder set as current directory
+
+#check which folder is your current directory using function getwd()
+getwd()
+# my output was "/Users/lmm89/OneDrive/Duke_University/9_Spring2022/ENV790_TSA/Git_Repo/ENV790_TimeSeriesAnalysis_Sp2022_v2" meaning current directory is my project folder, therefore I only need to use "."
+# if output was "/Users/lmm89/OneDrive/Duke_University/9_Spring2022/ENV790_TSA/Git_Repo/ENV790_TimeSeriesAnalysis_Sp2022_v2/Lessons" then I would need to use ".."
+
+raw_inflow_data <- read.table(file="./Data/inflowtimeseries.txt",header=FALSE,skip=0)
 
 #If you want specific columns just trim the table
 raw_inflow_data <- raw_inflow_data[,1:5] #the space before the comma means you want all rows
