@@ -3,6 +3,8 @@ title: "Import Data - ACF - PACF"
 author: "Luana Lima"
 date: "1/19/2022"
 output: pdf_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 ## Setting R code chunk options
@@ -37,10 +39,10 @@ For this first example we will import water inflow data for reservoirs in Brazil
 #Importing time series data from text file
 #I am calling it raw for now because it's data as it is in the file
 
-#Option 1: import using path
-raw_inflow_data <- read.table(file="/Users/lmm89/OneDrive/Duke_University/9_Spring2022/ENV790_TSA/Git_Repo/ENV790_TimeSeriesAnalysis_Sp2022_v2/Data/inflowtimeseries.txt",header=FALSE,skip=0)
+#Option 1: import using absolute path
+#raw_inflow_data <- read.table(file="/Users/lmm89/OneDrive/Duke_University/9_Spring2022/ENV790_TSA/Git_Repo/ENV790_TimeSeriesAnalysis_Sp2022_v2/Data/inflowtimeseries.txt",header=FALSE,skip=0)
 
-#Option 2: import using shortcut "." or ".."
+#Option 2: import using shortcut "." or ".." or relative path
 # the "." will point to the folder set as current directory
 # the ".." will point to your parent folder set as current directory
 
@@ -76,6 +78,10 @@ head(my_date)
 #add that to inflow_data 
 inflow_data <- cbind(my_date,raw_inflow_data[,3:5])
 head(inflow_data)
+format(my_date[1],format="%y-%m")
+format(my_date[1],format="%Y-%m")
+format(my_date[1],format="%Y-%b")
+
 
 ```
 
@@ -145,6 +151,7 @@ Many of the functions we will use require a time series object. You can transfor
 ```{r}
 ts_inflow_data <- ts(inflow_data[,2:(2+nhydro-1)]) #note that we are only transforming columns with inflow data, not the date columns
 ts_inflow_data
+#plot(ts_inflow_data[,1])
 ```
 
 Note that ts_inflow_data has information on start, end and frequency. We will discuss frequency in future lectures, for now let's just keep the default value for frequency which is 1.
