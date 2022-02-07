@@ -3,6 +3,8 @@ title: "Trend and Seasonality"
 author: "Luana Lima"
 date: "01/26/2022"
 output: pdf_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 ## Setting R code chunk options
@@ -10,7 +12,7 @@ output: pdf_document
 First R code chunk is used for setting the options for all R code chunks. The choice echo=TRUE means both code and output will appear on report, include = FALSE neither code nor output is printed.
 
 ```{r setup, include=FALSE} 
-knitr::opts_chunk$set(echo = TRUE) #,tidy.opts=list(width.cutoff=80), tidy=FALSE) 
+knitr::opts_chunk$set(echo = TRUE,tidy.opts=list(width.cutoff=80), tidy=FALSE) 
 ```
 
 ## Loading packages and initializing
