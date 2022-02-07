@@ -23,6 +23,7 @@ It's useful to designate one code chunk to load packages on the beginning of the
 ```{r package, include=FALSE}
 library(lubridate)
 library(ggplot2)
+library(forecast) #added for Acf and Pacf functions
 
 ```
 
@@ -34,19 +35,10 @@ For this first example we will import water inflow data for reservoirs in Brazil
 * *header =* : if your file has a header you should set this to TRUE, o.w. FALSE;
 * *skip =* : if your file has rows explaining the data or any other rows on the top that need to be skipped you should just set skip to be equal to the number of row that should be skipped before reading the data. Mote that if header=TRUE, you should not skip the row with the header. The default is *skip=0*;
 * *dec =* : define *dec="."* or *dec=","* depending on how it's defined on your set. The default is ".".
-```{r}
-getwd()
-```
-```{r}
-#adv of relative path: if from other's file can still open it
-raw_inflow_data<-read.table(file="./Data/inflowtimeseries.txt.",head=FALSE,skip=0)
-```
 
 ```{r}
 #Importing time series data from text file
 #I am calling it raw for now because it's data as it is in the file
-<<<<<<< HEAD
-=======
 
 #Option 1: import using absolute path
 #raw_inflow_data <- read.table(file="/Users/lmm89/OneDrive/Duke_University/9_Spring2022/ENV790_TSA/Git_Repo/ENV790_TimeSeriesAnalysis_Sp2022_v2/Data/inflowtimeseries.txt",header=FALSE,skip=0)
@@ -61,16 +53,10 @@ getwd()
 # if output was "/Users/lmm89/OneDrive/Duke_University/9_Spring2022/ENV790_TSA/Git_Repo/ENV790_TimeSeriesAnalysis_Sp2022_v2/Lessons" then I would need to use ".."
 
 raw_inflow_data <- read.table(file="./Data/inflowtimeseries.txt",header=FALSE,skip=0)
->>>>>>> c1f582e4f1e43afa1a86642fe6944ac1b42ab4ff
 
-raw_inflow_data <- read.table(file="C:/Users/lenovo/Desktop/Spring_2022/ENV790/ENV790_TimeSeriesAnalysis_Sp2022/Data/inflowtimeseries.txt.",header=FALSE, skip=0)
-
-
-#read.table(file=../)
 #If you want specific columns just trim the table
 raw_inflow_data <- raw_inflow_data[,1:5] #the space before the comma means you want all rows
-
-#and 1:5 means all columns from 1 to 5
+                                 #and 1:5 means all columns from 1 to 5
 nhydro <- ncol(raw_inflow_data)-2
 nobs <- nrow(raw_inflow_data) 
 
@@ -87,26 +73,17 @@ The data sets we will work with will be index by time, remember we are doing TIM
 
 ```{r}
 #using package lubridate
-#mdy(month-date-year)
 my_date <- paste(raw_inflow_data[,1],raw_inflow_data[,2],sep="-")
 my_date <- my(my_date)  #function my from package lubridate
 head(my_date)
 #add that to inflow_data 
 inflow_data <- cbind(my_date,raw_inflow_data[,3:5])
 head(inflow_data)
-<<<<<<< HEAD
-```
-=======
 format(my_date[1],format="%y-%m")
 format(my_date[1],format="%Y-%m")
 format(my_date[1],format="%Y-%b")
 
->>>>>>> c1f582e4f1e43afa1a86642fe6944ac1b42ab4ff
 
-```{r}
-format(my_date[1],format="%y-%m")
-format(my_date[1],format="%Y-%m")#want four digits for year
-format(my_date[1],format="%Y-%b")
 ```
 
 ## Initial plots
@@ -162,7 +139,6 @@ ggplot(inflow_data, aes(x=my_date, y=HP1)) +
             geom_line(color="blue")
 
 #adding two time series to the same plot
-#can enter all the command so don't need to console instead of inline
 ggplot(inflow_data, aes(x=my_date, y=Inflow)) +
             geom_line(aes(y=HP1,col="HP1")) +
             geom_line(aes(y=HP2,col="HP2")) +
@@ -176,12 +152,45 @@ Many of the functions we will use require a time series object. You can transfor
 ```{r}
 ts_inflow_data <- ts(inflow_data[,2:(2+nhydro-1)]) #note that we are only transforming columns with inflow data, not the date columns
 ts_inflow_data
-<<<<<<< HEAD
-plot(ts_inflow_data[,1])
-=======
 #plot(ts_inflow_data[,1])
->>>>>>> c1f582e4f1e43afa1a86642fe6944ac1b42ab4ff
 ```
 
 Note that ts_inflow_data has information on start, end and frequency. We will discuss frequency in future lectures, for now let's just keep the default value for frequency which is 1.
+
+## Plotting ACF and PACF
+
+There are multiple ways to get acf and pacf plots in R. The default package "stats" have the functions acf() and pacf(). Another option is with the functions Acf() and Pacf() from package "forecast". Package forecast is not a default package. So you need to install and load it on the beginning of your scripts. 
+
+```{r acf}
+# Option 1: The function acf() and pacf() is from package "stats"
+HP1_acf=acf(ts_inflow_data[,1],lag.max=60, type="correlation", plot=TRUE)
+
+HP1_pacf=pacf(ts_inflow_data[,1],lag.max=60, plot=TRUE)
+
+#Option 2: Computing ACF and PACF with package "forecast"
+
+#The next line will output a plot since we have plot=TRUE and also store the acf values in the object
+HP1_acf=Acf(ts_inflow_data[,1],lag.max=60, type="correlation", plot=TRUE)
+
+HP1_pacf=Pacf(ts_inflow_data[,1],lag.max=60, plot=TRUE)
+```
+
+```{r}
+#Create line graphs with multiple variables
+#ggplot(RE_data, aes(x=Month)) + geom_line(aes(y=RE_data$`Total Renewable Energy Production`)) +xlab("Year") + geom_line(aes(y=RE_data$`Total Biomass Energy Production`,col="Biomass"))+ geom_line(aes(y=RE_data$`Total Renewable Energy Production`,col="Renewables")) +geom_line(aes(y=RE_data$`Hydroelectric Power Consumption`,col="Hydro"))+ xlab("Year") + ylab("Total Energy Production (Trillion Btu)")+ labs(color="Types") + theme_minimal()+ geom_hline(yintercept = mean(Indcatotvalue), color="blue")
+```
+```{r}
+RE_data <- cbind(raw_RE_data[-c(1),1],sub_RE_data[,])
+head(RE_data)
+```{r}
+#using package lubridate
+library(lubridate)
+my_date <- my(raw_RE_data[,1])  #function my from package lubridate
+head(my_date)
+```
+```
+```{r}
+read_excel(path="./Data/Table_10.1_Renewable_Energy_Production_and_Consumption_by_Source.xlsx",skip=10,range="A11:N11",col_name=FALSE)
+
+```
 
