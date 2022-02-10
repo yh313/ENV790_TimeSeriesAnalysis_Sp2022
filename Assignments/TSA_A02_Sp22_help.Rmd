@@ -51,11 +51,10 @@ head(energy_data)
 
 ```{r}
 #Importing data set - using readxl package
-energy_data2 <- read_xlsx(path="./Data/Table_10.1_Renewable_Energy_Production_and_Consumption_by_Source.xlsx",skip = 11) 
-
+energy_data2 <- read_xlsx(path="./Data/Table_10.1_Renewable_Energy_Production_and_Consumption_by_Source.xlsx",skip = 12,col_names = FALSE) 
 
 #Now let's extract the column names from row 11 only
-read_col_names2 <- read_xlsx(path="./Data/Table_10.1_Renewable_Energy_Production_and_Consumption_by_Source.xlsx",range="A11:N11")
+read_col_names2 <- read_xlsx(path="./Data/Table_10.1_Renewable_Energy_Production_and_Consumption_by_Source.xlsx",range="A11:N11",col_names = FALSE)
 
 colnames(energy_data2) <- read_col_names2
 head(energy_data2)
