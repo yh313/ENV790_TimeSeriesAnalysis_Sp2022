@@ -122,22 +122,24 @@ wind_trend <- decompose_wind_data$trend
 
 #Ex3: Create one data frame with all three vector and the Date columns from wind_data
 
-Composition_wind_data <- data.frame(Trend=wind_trend,Seasonal=wind_season,Random=wind_random)
+Composition_wind_data <- data.frame(date=full_wind_data$Date, Trend=wind_trend,Seasonal=wind_season,Random=wind_random)
 
 #Ex4: Inspect the data frame using head() and tail()
-head(Composition_wind_data)
-tail(Composition_wind_data)
+head(Composition_wind_data,10)
+tail(Composition_wind_data,10)
 
 # Discuss the results
 
 ```
 
 Discussion: Why the missing values?? 
-
+Is the way that it is detrending and seasonality, 
 ## Coding challenge
 ```{r}
 
 #Ex5: Try to reproduce the trend component from decompose().
+
+#why decompose: deterministic, and stochastic, and have multiple frequency, better tool than linear deterministic trend.
 
 #Ex6: Try to reproduce the seasonal component from decompose().
 

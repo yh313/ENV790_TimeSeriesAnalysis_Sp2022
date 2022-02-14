@@ -1,13 +1,18 @@
 ---
 title: "ENV 790.30 - Time Series Analysis for Energy Data | Spring 2022"
-subtitle: "Assignment 3 - Due date 02/08/22"
 author: "Yu Hai"
-output: pdf_document
-geometry: margin=2.54cm
-editor_options: 
+subtitle: Assignment 3 - Due date 02/08/22
+editor_options:
   chunk_output_type: inline
+output:
+  pdf_document:
+    latex_engine: xelatex
+geometry: margin=2.54cm
+header-includes:
+  \usepackage{fvextra}
+  \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
 ---
-  
+
 ## Directions
   
 You should open the .rmd file corresponding to this assignment on RStudio. The file is available on our class repository on Github. 
@@ -31,9 +36,6 @@ R packages needed for this assignment:"forecast","tseries", and "Kendall". Insta
 
 ```{r}
 #Load/install required package here
-install.packages("forecast")
-install.packages("tseries")
-install.packages("Kendall")
 library(forecast)
 library(tseries)
 library(Kendall)
@@ -60,16 +62,13 @@ RE_data$`Total Biomass Energy Production`<- as.numeric(RE_data$`Total Biomass En
 RE_data$`Total Renewable Energy Production`<- as.numeric(RE_data$`Total Renewable Energy Production`)
 RE_data$`Hydroelectric Power Consumption`<- as.numeric(RE_data$`Hydroelectric Power Consumption`)
 head(RE_data)
-#nhydro <- ncol(raw_inflow_data)-2
-#nobs <- nrow(raw_inflow_data)
 ```
 ```{r}
-colnames<-c("Biomass Production (trillion Btu)","Renewable Production (trillion Btu)","Hydroelectric Consumption (treillion Btu)")
+colnames<-c("Biomass Production","Renewable Production","Hydroelectric Consumption")
 ```
 
 
 ```{r}
-#How to put column names as the plot titles?
 par(mfrow=c(1,3))
 for(i in 2:4){
   plot(RE_data[,i],type="l",ylab=colnames[i-1])
@@ -81,7 +80,7 @@ for(i in 2:4){
 ### Q2
 From the plot in Q1, do the series Total Biomass Energy Production, Total Renewable Energy Production, Hydroelectric Power Consumption appear to have a trend? If yes, what kind of trend?
 
-Biomass and renewable production show linear, increasing trend, while the hydroelectric power consumption doesn't show an long-term trend.
+Biomass and renewable production show a linear, increasing trend, while the hydroelectric power consumption shows a linear, decreasing trend. All three series seems to have seasonality as there is consistent fluctuation pattern between observations within each year. 
 
 ### Q3
 Use the *lm()* function to fit a linear trend to the three time series. Ask R to print the summary of the regression. Interpret the regression output, i.e., slope and intercept. Save the regression coefficients for further analysis.
@@ -123,7 +122,7 @@ beta0_bio=as.numeric(lm1$coefficients[1])
 beta1_bio=as.numeric(lm1$coefficients[2])
 
 detrend_bio <- RE_data[,2]-(beta0_bio+beta1_bio*t)
- ggplot(RE_data, aes(x=RE_data[,1], y=RE_data[,2])) +
+ ggplot(RE_data, aes(x=Month, y=RE_data[,2])) +
             geom_line(color="blue") +
             ylab("Total Biomass Energy Production") +
             geom_smooth(color="red",method="lm") +
@@ -136,7 +135,7 @@ beta0_renew=as.numeric(lm2$coefficients[1])
 beta1_renew=as.numeric(lm2$coefficients[2])
 
 detrend_renew <- RE_data[,3]-(beta0_renew+beta1_renew*t)
- ggplot(RE_data, aes(x=RE_data[,1], y=RE_data[,3])) +
+ ggplot(RE_data, aes(x=Month, y=RE_data[,3])) +
             geom_line(color="blue") +
             ylab("Total Renewable Energy Production") +
             geom_smooth(color="red",method="lm") +
@@ -149,7 +148,7 @@ beta0_hydro=as.numeric(lm3$coefficients[1])
 beta1_hydro=as.numeric(lm3$coefficients[2])
 
 detrend_hydro <- RE_data[,4]-(beta0_hydro+beta1_hydro*t)
- ggplot(RE_data, aes(x=RE_data[,1], y=RE_data[,4])) +
+ ggplot(RE_data, aes(x=Month, y=RE_data[,4])) +
             geom_line(color="blue") +
             ylab("Total Hydroelectric Power Consumption") +
             geom_smooth(color="red",method="lm") +
@@ -157,7 +156,7 @@ detrend_hydro <- RE_data[,4]-(beta0_hydro+beta1_hydro*t)
             geom_smooth(aes(y=detrend_hydro),color="orange",method="lm") 
 ```
 
-The linear trend after detrending become horizontal, so both beta 1 nad beta 0 become 0. The detrending process removed the effects of trend from the original data but keep other components (e.g. seasonality and clynicality) the same. The detrending process allows those components to be identified.
+The linear trend after detrending become horizontal, so both beta 1 and beta 0 becomes 0. The detrending process removed the effects of trend from the original data but keep other components (e.g. seasonality and clynicality) the same, so the detrending process allows those components to be identified.
 
 
 ### Q5
@@ -181,14 +180,12 @@ par(mfrow=c(2,2))
 ```{r}
 #hydro
 par(mfrow=c(2,2))
-  Acf(RE_data[,3],lag.max=40,main=colnames[3]) 
-  Pacf(RE_data[,3],lag.max=40,main=colnames[3]) 
+  Acf(RE_data[,4],lag.max=40,main=colnames[3]) 
+  Pacf(RE_data[,4],lag.max=40,main=colnames[3]) 
   Acf(detrend_hydro,lag.max=40,main=paste("Detrended",colnames[3],sep="") )
   Pacf(detrend_hydro,lag.max=40,main=paste("Detrended",colnames[3],sep="") )
 ```
-The plots change:
-biomass and renewable: more obvious seasonality observed, PACF with higher vavlues.
-hydro: cannot observe the decreasing trend, but there is an obvious seasonality observed.
+In ACF plots of all three variables, there are greater fluctuation as ACF is decaying (i.e. the seasonality becomes more obvious), the changes in PACF plots are relatively small.
 
 ## Seasonal Component
 
@@ -196,115 +193,102 @@ Set aside the detrended series and consider the original series again from Q1 to
 
 ### Q6
 Do the series seem to have a seasonal trend? Which serie/series? Use function *lm()* to fit a seasonal means model (i.e. using the seasonal dummies) to this/these time series. Ask R to print the summary of the regression. Interpret the regression output. Save the regression coefficients for further analysis.
-```{r}
-#hydro strong seasonality
-iHP=3
-dummies <- seasonaldummy(ts_RE_data[,iHP])  
-seas_means_model=lm(RE_data[,(iHP+1)]~dummies)
-summary(seas_means_model)
-beta_int=seas_means_model$coefficients[1]
-beta_coeff=seas_means_model$coefficients[2:12]
-RE_seas_comp=array(0,nobs)
-for(i in 1:nobs){
-  RE_seas_comp[i]=(beta_int+beta_coeff%*%dummies[i,])
-}
-```
 
 ```{r}
-#renewbale no seasonality
-iHP=2
-dummies <- seasonaldummy(ts_RE_data[,iHP])  
-seas_means_model=lm(RE_data[,(iHP+1)]~dummies)
-summary(seas_means_model)
-beta_int=seas_means_model$coefficients[1]
-beta_coeff=seas_means_model$coefficients[2:12]
-RE_seas_comp=array(0,nobs)
-for(i in 1:nobs){
-  RE_seas_comp[i]=(beta_int+beta_coeff%*%dummies[i,])
-}
+#Biomass
+dummies_bio <- seasonaldummy(ts_RE_data[,1])  
+seas_means_model_bio=lm(RE_data[,(2)]~dummies_bio)
+summary(seas_means_model_bio)
+beta_int_bio=seas_means_model_bio$coefficients[1]
+beta_coeff_bio=seas_means_model_bio$coefficients[2:12]
 ```
-
 ```{r}
-#biomass no seasonality
-iHP=1
-dummies <- seasonaldummy(ts_RE_data[,iHP])  
-seas_means_model=lm(RE_data[,(iHP+1)]~dummies)
-summary(seas_means_model)
-beta_int=seas_means_model$coefficients[1]
-beta_coeff=seas_means_model$coefficients[2:12]
-RE_seas_comp=array(0,nobs)
-for(i in 1:nobs){
-  RE_seas_comp[i]=(beta_int+beta_coeff%*%dummies[i,])
-}
+#Renewable
+dummies_renew <- seasonaldummy(ts_RE_data[,2])  
+seas_means_model_renew=lm(RE_data[,(3)]~dummies_renew)
+summary(seas_means_model_renew)
+beta_int_renew=seas_means_model_renew$coefficients[1]
+beta_coeff_renew=seas_means_model_renew$coefficients[2:12]
 ```
-
+```{r}
+#Hydroelectric
+dummies_hydro <- seasonaldummy(ts_RE_data[,3])  
+seas_means_model_hydro=lm(RE_data[,(4)]~dummies_hydro)
+summary(seas_means_model_hydro)
+beta_int_hydro=seas_means_model_hydro$coefficients[1]
+beta_coeff_hydro=seas_means_model_hydro$coefficients[2:12]
+```
+The seasonal mean models show that there is a significant seasonality for hydroelectric power consumption (p<0.05), while there isn't a significant seasonality for biomass energy production (p=0.86) or for renewable energy production (p=0.07).
 
 
 ### Q7
 Use the regression coefficients from Q6 to deseason the series. Plot the deseason series and compare with the plots from part Q1. Did anything change?
+
 ```{r}
-iHP=1
-dummies <- seasonaldummy(ts_RE_data[,iHP])  
-seas_means_model=lm(RE_data[,(iHP+1)]~dummies)
-summary(seas_means_model)
-beta_int=seas_means_model$coefficients[1]
-beta_coeff=seas_means_model$coefficients[2:12]
-RE_seas_comp=array(0,nobs)
+#Biomass deseason
+RE_seas_comp_bio=array(0,nobs)
 for(i in 1:nobs){
-  RE_seas_comp[i]=(beta_int+beta_coeff%*%dummies[i,])
+  RE_seas_comp_bio[i]=(beta_int_bio+beta_coeff_bio%*%dummies_bio[i,])
 }
-deseason_RE_data <- RE_data[,(1+iHP)]-RE_seas_comp
-ggplot(RE_data, aes(x=Month, y=RE_data[,(1+iHP)])) +
+deseason_RE_data_bio <- RE_data[,2]-RE_seas_comp_bio
+ggplot(RE_data, aes(x=Month, y=RE_data[,2])) +
             geom_line(color="blue") +
-            ylab(paste0("Inflow ",colnames(RE_data)[(1+iHP)],sep="")) +
-            geom_line(aes(y=deseason_RE_data), col="green")
+            ylab(colnames(RE_data)[2]) +
+            geom_line(aes(y=deseason_RE_data_bio), col="green")
 ```
 
 ```{r}
-iHP=2
-dummies <- seasonaldummy(ts_RE_data[,iHP])  
-seas_means_model=lm(RE_data[,(iHP+1)]~dummies)
-summary(seas_means_model)
-beta_int=seas_means_model$coefficients[1]
-beta_coeff=seas_means_model$coefficients[2:12]
-RE_seas_comp=array(0,nobs)
+#Renewable
+RE_seas_comp_renew=array(0,nobs)
 for(i in 1:nobs){
-  RE_seas_comp[i]=(beta_int+beta_coeff%*%dummies[i,])
+  RE_seas_comp_renew[i]=(beta_int_renew+beta_coeff_renew%*%dummies_renew[i,])
 }
+deseason_RE_data_renew <- RE_data[,3]-RE_seas_comp_renew
 
-deseason_RE_data <- RE_data[,(1+iHP)]-RE_seas_comp
-ggplot(RE_data, aes(x=Month, y=RE_data[,(1+iHP)])) +
+ggplot(RE_data, aes(x=Month, y=RE_data[,3])) +
             geom_line(color="blue") +
-            ylab(paste0("Inflow ",colnames(RE_data)[(1+iHP)],sep="")) +
-            geom_line(aes(y=deseason_RE_data), col="green")
+            ylab(colnames(RE_data)[3]) +
+            geom_line(aes(y=deseason_RE_data_renew), col="green")
 ```
 
 ```{r}
-iHP=3
-dummies <- seasonaldummy(ts_RE_data[,iHP])  
-seas_means_model=lm(RE_data[,(iHP+1)]~dummies)
-summary(seas_means_model)
-beta_int=seas_means_model$coefficients[1]
-beta_coeff=seas_means_model$coefficients[2:12]
-RE_seas_comp=array(0,nobs)
+
+#Hydro
+RE_seas_comp_hydro=array(0,nobs)
 for(i in 1:nobs){
-  RE_seas_comp[i]=(beta_int+beta_coeff%*%dummies[i,])
+  RE_seas_comp_hydro[i]=(beta_int_hydro+beta_coeff_hydro%*%dummies_hydro[i,])
 }
-deseason_RE_data <- RE_data[,(1+iHP)]-RE_seas_comp
-ggplot(RE_data, aes(x=Month, y=RE_data[,(1+iHP)])) +
+deseason_RE_data_hydro <- RE_data[,4]-RE_seas_comp_hydro
+ggplot(RE_data, aes(x=Month, y=RE_data[,4])) +
             geom_line(color="blue") +
-            ylab(paste0("Inflow ",colnames(RE_data)[(1+iHP)],sep="")) +
-            geom_line(aes(y=deseason_RE_data), col="green")
+            ylab(colnames(RE_data)[4]) +
+            geom_line(aes(y=deseason_RE_data_hydro), col="green")
 ```
+There are changes in all three variables: there are less variations between observations that within one year in the deseason series. As the variation caused by seasonality is removed, and the long-term trend is more obvious. 
 
 ### Q8
 Plot ACF and PACF for the deseason series and compare with the plots from Q1. Did the plots change? How?
 
 ```{r}
+deseason_RE_data<-c(deseason_RE_data_bio,deseason_RE_data_renew,deseason_RE_data_hydro)
+#biomass
 par(mfrow=c(2,2))
-  Acf(RE_data[,iHP],lag.max=40,main=paste("Inflow HP",i,sep="")) 
-  Pacf(RE_data[,iHP],lag.max=40,main=paste("Inflow HP",i,sep="")) 
-  Acf(deseason_RE_data,lag.max=40,main=paste("Deseason",iHP,sep="")) 
-  Pacf(deseason_RE_data,lag.max=40,main=paste("Deseason",iHP,sep="")) 
-```
+  Acf(RE_data[,2],lag.max=40,main=colnames[1]) 
+  Pacf(RE_data[,2],lag.max=40,main=colnames[1])
+  Acf(deseason_RE_data_bio,lag.max=40,main=paste("Deseason ",colnames[1],sep="")) 
+  Pacf(deseason_RE_data_bio,lag.max=40,main=paste("Deseason ",colnames[1],sep=""))
 
+#renewable
+par(mfrow=c(2,2))
+  Acf(RE_data[,3],lag.max=40,main=colnames[2]) 
+  Pacf(RE_data[,3],lag.max=40,main=colnames[2])
+  Acf(deseason_RE_data_renew,lag.max=40,main=paste("Deseason ",colnames[2],sep="")) 
+  Pacf(deseason_RE_data_renew,lag.max=40,main=paste("Deseason ",colnames[2],sep=""))
+#hydroelectric
+par(mfrow=c(2,2))
+  Acf(RE_data[,4],lag.max=40,main=colnames[3]) 
+  Pacf(RE_data[,4],lag.max=40,main=colnames[3])
+  Acf(deseason_RE_data_hydro,lag.max=40,main=paste("Deseason ",colnames[3],sep="")) 
+  Pacf(deseason_RE_data_hydro,lag.max=40,main=paste("Deseason ",colnames[3],sep=""))
+```
+For biomass and renewable energy production, the seasonal mean models indicate that there is no significant seasonality, but from deseason ACF plots, we can still observe less fluctuation as ACF is decaying. For hydroelectric power consumption ACF plot, all ACF becomes positive, the ACF decays faster, and the seasonal pattern disappears. In PACF for all three variables, the significant PACF with the original data between the observations at lag=0 and at lag=12, 24, and 36 become weaker, especially for renewable production and hydroelectric consumption, those PACF values recede into the insignificant range (indicated by blue dash lines).
