@@ -233,7 +233,7 @@ ggplot(inflow_random, aes(x=date, y=inflow)) +
 
 Note we sill have some outliers.
 
-You can repeat the produce until the next extreme value is not an outlier or write a loop as below.
+You can repeat the process until the next extreme value is not an outlier or write a loop as below.
 
 ```{r}
 summary(inflow_random$inflow)
