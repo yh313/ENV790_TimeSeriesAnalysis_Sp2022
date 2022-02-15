@@ -30,3 +30,4 @@ vignettes/*.pdf
 *_KEY.Rmd
 #Mac files
 .DS_Store
+*/.DS_Store
