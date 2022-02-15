@@ -28,3 +28,5 @@ vignettes/*.pdf
 .Renviron
 *.Rproj
 *_KEY.Rmd
+#Mac files
+.DS_Store
