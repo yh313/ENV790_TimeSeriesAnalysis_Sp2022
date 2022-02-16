@@ -153,7 +153,7 @@ detrend_hydro <- RE_data[,4]-(beta0_hydro+beta1_hydro*t)
             ylab("Total Hydroelectric Power Consumption") +
             geom_smooth(color="red",method="lm") +
             geom_line(aes(y=detrend_hydro), col="green")+
-            geom_smooth(aes(y=detrend_hydro),color="orange",method="lm") 
+            geom_smooth(aes(y=detrend_hydro),color="orange",method="lm")
 ```
 
 The linear trend after detrending become horizontal, so both beta 1 and beta 0 becomes 0. The detrending process removed the effects of trend from the original data but keep other components (e.g. seasonality and clynicality) the same, so the detrending process allows those components to be identified.

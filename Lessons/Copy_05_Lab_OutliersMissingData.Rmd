@@ -138,7 +138,7 @@ Is the way that it is detrending and seasonality,
 ```{r}
 
 #Ex5: Try to reproduce the trend component from decompose().
-
+order<-6, 
 #why decompose: deterministic, and stochastic, and have multiple frequency, better tool than linear deterministic trend.
 
 #Ex6: Try to reproduce the seasonal component from decompose().
