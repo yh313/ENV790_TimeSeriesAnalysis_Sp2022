@@ -3,6 +3,8 @@ title: "M6: ARIMA Models in R"
 author: "Luana Lima"
 date: "02/14/2022"
 output: pdf_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 ## Setting R code chunk options
@@ -69,7 +71,8 @@ Many of the functions we will use require a time series object. You can transfor
 
 ```{r}
 ts_electricity_price <- ts(electricity_price_processed[,2:(nvar+1)],
-                           start=c(year(electricity_price_processed$Month[1]),month(electricity_price_processed$Month[1])),
+                           start=c(year(electricity_price_processed$Month[1]),
+                                   month(electricity_price_processed$Month[1])),
                            frequency=12) 
 #note that we are only transforming columns with electricity price, not the date columns  
 head(ts_electricity_price,15)
