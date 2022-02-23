@@ -5,8 +5,9 @@ author: "Yu Hai"
 geometry: margin=2.54cm
 editor_options: 
   chunk_output_type: inline
-  output:pdf_document
-geometry: margin=2.54cm
+output:
+  pdf_document:
+    latex_engine: xelatex
 header-includes:
   \usepackage{fvextra}
   \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
@@ -85,7 +86,7 @@ beta1_renew=as.numeric(lm2$coefficients[2])
 
 detrend_renew <- RE_data[,3]-(beta0_renew+beta1_renew*t)
  ggplot(RE_data, aes(x=Month, y=RE_data[,3])) +
-            ylab("Total Renewable Energy Production (trillion Btu)")+
+            ylab("Detrended Total Renewable Energy Production (trillion Btu)")+
             xlab("Time")+
             geom_line(aes(y=detrend_renew), col="green")+
             geom_smooth(aes(y=detrend_renew),color="orange",method="lm") 
@@ -96,9 +97,9 @@ Create a data frame with 4 columns: month, original series, detrended by Regress
 
 ```{r}
 #Data frame - remember to note include January 1973
-head(RE_data)
 RE_data<-RE_data[-c(1),]
 New_renew <-data.frame(Month=(RE_data$Month), Original=RE_data$`Total Renewable Energy Production`, Detrended=detrend_renew[-1],Differenced=diff_RE_1)
+head(RE_data)
 ```
 
 ### Q4
