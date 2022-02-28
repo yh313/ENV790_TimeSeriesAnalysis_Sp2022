@@ -4,7 +4,7 @@ author: "Luana Lima"
 date: "02/21/2022"
 output: pdf_document
 editor_options: 
-  chunk_output_type: console
+  chunk_output_type: inline
 ---
 
 ## Setting R code chunk options
@@ -27,6 +27,7 @@ library(Kendall)
 library(tseries)
 library(outliers)
 library(tidyverse)
+library(readxl)
 
 ```
 
@@ -37,8 +38,9 @@ For this module we will work with monthly average for electricity retail price i
 ```{r}
 
 #Importing time series data from text file#
-electricity_price <- read.csv(file="./Data/Average_retail_price_of_electricity_United_States_monthly.csv",header=TRUE,skip=4)
+electricity_price <- read.csv("./Data/Average_retail_price_of_electricity_United_States_monthly.csv",header=TRUE, skip=4)
 
+col_names()
 #Inspect data
 head(electricity_price)
 nvar <- ncol(electricity_price) - 1

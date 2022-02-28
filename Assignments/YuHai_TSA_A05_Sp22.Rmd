@@ -1,0 +1,152 @@
+---
+title: "ENV 790.30 - Time Series Analysis for Energy Data | Spring 2022"
+subtitle: "Assignment 5 - Due date 02/28/22"
+author: "Yu Hai"
+output: pdf_document
+geometry: margin=2.54cm
+editor_options: 
+  chunk_output_type: inline
+---
+
+## Directions
+
+You should open the .rmd file corresponding to this assignment on RStudio. The file is available on our class repository on Github. And to do so you will need to fork our repository and link it to your RStudio.
+
+Once you have the project open the first thing you will do is change "Student Name" on line 3 with your name. Then you will start working through the assignment by **creating code and output** that answer each question. Be sure to use this assignment document. Your report should contain the answer to each question and any plots/tables you obtained (when applicable).
+
+When you have completed the assignment, **Knit** the text and code into a single PDF file. Rename the pdf file such that it includes your first and last name (e.g., "LuanaLima_TSA_A05_Sp22.Rmd"). Submit this pdf using Sakai.
+
+R packages needed for this assignment are listed below. Install these packages, if you haven't done yet. Do not forget to load them before running your script, since they are NOT default packages.\\
+
+```{r}
+#Load/install required package here
+library(readxl)
+library(forecast)
+library(tseries)
+library(ggplot2)
+library(Kendall)
+library(lubridate)
+library(tidyverse)  #load this package so yon clean the data frame using pipes
+
+
+```
+
+## Decomposing Time Series
+
+Consider the same data you used for A04 from the spreadsheet "Table_10.1_Renewable_Energy_Production_and_Consumption_by_Source.xlsx". The data comes from the US Energy Information and Administration and corresponds to the January 2021 Monthly Energy Review.
+
+```{r}
+#Importing data set - using xlsx package
+#energy_data <- read_xlsx(path="./Data/Table_10.1_Renewable_Energy_Production_and_Consumption_by_Source.xlsx",startRow = 13,sheetIndex=1) #startRow is equivalent to skip on read.table
+energy_data<-read_excel(path="./Data/Table_10.1_Renewable_Energy_Production_and_Consumption_by_Source.xlsx",skip=11)
+head(energy_data)
+#Now let's extract the column names from row 11 only
+read_col_names <- read_xlsx(path="./Data/Table_10.1_Renewable_Energy_Production_and_Consumption_by_Source.xlsx",range = "A11:N11")
+
+colnames(energy_data) <- read_col_names
+head(energy_data)
+
+nobs=nrow(energy_data)
+nvar=ncol(energy_data)
+
+```
+
+### Q1
+
+For this assignment you will work only with the following columns: Solar Energy Consumption and Wind Energy Consumption. Create a data frame structure with these two time series only and the Date column. Drop the rows with *Not Available* and convert the columns to numeric. You can use filtering to eliminate the initial rows or convert to numeric and then use the drop_na() function. If you are familiar with pipes for data wrangling, try using it!
+
+```{r}
+raw_RE_data<-read_excel(path="./Data/Table_10.1_Renewable_Energy_Production_and_Consumption_by_Source.xlsx",skip=10)
+raw_RE_data
+sub_RE_data <- raw_RE_data[-c(1),8:9]
+head(sub_RE_data)
+RE_data <- cbind(raw_RE_data[-c(1),1],sub_RE_data[,])
+RE_data$`Solar Energy Consumption`<- as.numeric(RE_data$`Solar Energy Consumption`)
+RE_data$`Wind Energy Consumption`<- as.numeric(RE_data$`Wind Energy Consumption`)
+head(RE_data)
+sum(is.na(RE_data$`Solar Energy Consumption`))
+clean_RE_data <- na.omit(RE_data)
+head(clean_RE_data)
+clean_RE_data$Month<-as.Date(clean_RE_data$Month)
+```
+
+### Q2
+
+Plot the Solar and Wind energy consumption over time using ggplot. Plot each series on a separate graph. No need to add legend. Add informative names to the y axis using `ylab()`. Explore the function scale_x\_date() on ggplot and see if you can change the x axis to improve your plot. Hint: use *scale_x\_date(date_breaks = "5 years", date_labels = "%Y")")*
+
+```{r}
+par(mfrow=c(1,2))
+
+ggplot(clean_RE_data, aes(x=Month, y=clean_RE_data[,2])) +
+            geom_line(color="blue") +
+            ylab("Solar Energy Consumption (trillion Btu)")+
+            xlab("Time")+
+            scale_x_date(date_breaks = "5 years", date_labels = "%Y")
+ggplot(clean_RE_data, aes(x=Month, y=clean_RE_data[,3])) +
+            geom_line(color="blue") +
+            ylab("Wind Energy Consumption (trillion Btu)")+
+            xlab("Time")+
+            scale_x_date(date_breaks = "5 years", date_labels = "%Y")
+```
+
+### Q3
+
+Now plot both series in the same graph, also using ggplot(). Look at lines 142-149 of the file `05_Lab_OutliersMissingData_Solution` to learn how to manually add a legend to ggplot. Make the solar energy consumption red and wind energy consumption blue. Add informative name to the y axis using `ylab("Energy Consumption)`. And use function scale_x\_date() again to improve x axis.
+
+```{r}
+ggplot(RE_data, aes(x=Month,y=RE_data[,2],show.legend=TRUE)) +
+            ylab("Renewable Energy Consumption (trillion Btu)") +
+            xlab("Time")+
+            geom_line(aes(y=RE_data[,2],color="Solar"))+
+            geom_line(aes(y=RE_data[,3],color="Wind"))+
+  scale_color_manual(name = "Types", breaks=c("Solar","Wind"),
+                      values = c("Solar" = "red", 
+                                 "Wind" = "blue"))
+
+
+```
+
+### Q3
+
+Transform wind and solar series into a time series object and apply the decompose function on them using the additive option, i.e., `decompose(ts_data, type = "additive")`. What can you say about the trend component? What about the random component? Does the random component look random? Or does it appear to still have some seasonality on it?
+
+There is an increasing trend, but it is not linear. The random component doesn't seems as a white noise, and it appear to still have seasonality on it as there is periodic fluctuation appears throughout the time of observations (the fluctuation becomes stronger after 2015). Thus, the additive decomposition may not be the appropriate method for this time seires. 
+```{r}
+ts_solar_data <- ts(RE_data$`Solar Energy Consumption`,frequency=12,start=c(1973, 1), end=c(2021, 09)) 
+ts_solar_data<-na.omit(ts_solar_data)
+head(ts_solar_data)
+decompose_solar_data=decompose(ts_solar_data,"additive")
+plot(decompose_solar_data)
+```
+
+### Q4
+
+Use the decompose function again but now change the type of the seasonal component from additive to multiplicative. What happened to the random component this time?
+
+The random component shows less seasonality, but there is still inconsistency of the variations between the observations before and after 1990 (more intense fluations on observations before 1990). Observaitons between 1990 and 2005 still shows a weak seasonality.
+```{r}
+decompose_solar_data_2=decompose(ts_solar_data,"multiplicative")
+plot(decompose_solar_data_2)
+```
+
+### Q5
+
+When fitting a model to this data, do you think you need all the historical data? Think about the data from 90s and early 20s. Are there any information from those years we might need to forecast the next six months of Solar and/or Wind consumption. Explain your response.
+#level shift? but by defination  (changes in concepts and definitions or complation methods of the survey population?)
+> Answer:No, we should see if there is a level shift exist in the time series. The observations from 90s and early 20s show a totally different patterns than observaionts more recently (after 2005 for wind, after 2010 for solar), so we can suspect there is a permanent change in the time series level. If we define it as a level shift, then we should not include the observations in early 20s and before to model the next six months.
+
+### Q6
+
+Create a new time series object where historical data starts on January 2012. Hint: use `filter()` function so that you don't need to point to row numbers, .i.e, `filter(xxxx, year(Date) >= 2012 )`. Apply the decompose function `type=additive` to this new time series. Comment the results. Does the random component look random? Think about our discussion in class about trying to remove the seasonal component and the challenge of trend on the seasonal component.
+
+```{r}
+#We don't need to, can just define start date and end date? 
+ts_solar_data_3<-filter(clean_RE_data, as.numeric(year(Month)) >= 2012 )
+head(ts_solar_data_3)
+
+```
+
+> Answer:
+
+
+
