@@ -1,11 +1,13 @@
 ---
 title: "ENV 790.30 - Time Series Analysis for Energy Data | Spring 2022"
+subtitle: "Assignment 5 - Due date 02/28/22"
 author: "Yu Hai"
-subtitle: Assignment 5 - Due date 02/28/22
-output:
+geometry: margin=2.54cm
+editor_options: 
+  chunk_output_type: inline
+  output:
   pdf_document:
     latex_engine: xelatex
-geometry: margin=2.54cm
 header-includes:
   \usepackage{fvextra}
   \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
@@ -116,9 +118,8 @@ ts_solar_data<-na.omit(ts_solar_data)
 head(ts_solar_data)
 decompose_solar_data=decompose(ts_solar_data,"additive")
 plot(decompose_solar_data)
-title(sub="solar")
 ```
-For solar energy consumption, the trend component shows an increasing trend, but it is not linear (slope becomes much steeper since 2010). The random component doesn't seems random, and it appears to still have seasonality on it as there is periodic fluctuation throughout the time of observations (the fluctuation becomes stronger after 2015). Thus, the additive decomposition may not be the appropriate method for this time series. 
+For solar energy consumption, the trend component shows an increasing trend, but it is not linear. The random component doesn't seems random, and it appears to still have seasonality on it as there is periodic fluctuation throughout the time of observations (the fluctuation becomes stronger after 2015). Thus, the additive decomposition may not be the appropriate method for this time series. 
 ```{r}
 #wind
 ts_wind_data <- ts(RE_data$`Wind Energy Consumption`,frequency=12,start=c(1973, 1), end=c(2021, 09)) 
@@ -126,7 +127,6 @@ ts_wind_data<-na.omit(ts_wind_data)
 head(ts_solar_data)
 decompose_wind_data=decompose(ts_wind_data,"additive")
 plot(decompose_wind_data)
-title(sub="wind")
 ```
 Similar to solar, the trend component of wind energy consumption shows a non-linear, increasing trend. The random component shows seasonality for observation before 2010. After 2010, the random component seems random but with greater fluctuations.
 
@@ -139,7 +139,6 @@ Use the decompose function again but now change the type of the seasonal compone
 #solar
 decompose_solar_data_2=decompose(ts_solar_data,"multiplicative")
 plot(decompose_solar_data_2)
-title(sub="solar")
 ```
 For solar energy consumption, compared to the additive decomposition, the random component shows no seasonality for observations before 1990, but there is still inconsistency of the pattern of fluctuations between the observations before and after 1990. The random component of observations after 1990 still shows seasonality, but the seasonality gets weaker after 2005. 
 
@@ -147,7 +146,6 @@ For solar energy consumption, compared to the additive decomposition, the random
 #wind
 decompose_wind_data_2=decompose(ts_wind_data,"multiplicative")
 plot(decompose_wind_data_2)
-title(sub="wind")
 ```
 Compared to the additive decomposition, the random component of wind energy consumption shows less seasonality, especially on observations before 2010. However, the random component of observations after 2010 shows a weak seasonality. The random component of observations before 2000 also shows a greater fluctuation compared to later observations. 
 
@@ -168,14 +166,12 @@ head(solar_data_3)
 ts_solar_data_3<-ts(solar_data_3$`Solar Energy Consumption`, frequency=12,start=c(2012, 1), end=c(2021, 09)) 
 decompose_solar_data_3=decompose(ts_solar_data_3,"additive")
 plot(decompose_solar_data_3)
-title(sub="solar")
 ```
 ```{r}
 #wind
 ts_wind_data_3<-ts(solar_data_3$`Wind Energy Consumption`, frequency=12,start=c(2012, 1), end=c(2021, 09)) 
 decompose_wind_data_3=decompose(ts_wind_data_3,"additive")
 plot(decompose_wind_data_3)
-title(sub="wind")
 ```
 
 > Answer: For wind energy consumption after 2012, the random component seems random, while the random component of solar energy consumption after 2012 still shows seasonality. The reason might be that the seasonal component of solar energy consumption is not constant over time, but rather contains a long-term trend (e.g. climate change impact), so the additive decomposition cannot completely remove this type of seasonal component. 
