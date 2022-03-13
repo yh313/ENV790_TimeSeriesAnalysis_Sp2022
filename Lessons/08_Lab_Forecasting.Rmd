@@ -4,7 +4,7 @@ author: "Luana Lima"
 date: "03/02/2022"
 output: pdf_document
 editor_options: 
-  chunk_output_type: console
+  chunk_output_type: inline
 ---
 
 ## Objectives
@@ -110,7 +110,16 @@ Ex1: Which models could be used to forecast the non-seasonal temperature series?
 
 
 ```{r}
+BR_MEAN_deseas <- meanf(BR_Temp_ts_deseas, h=36)
+plot(BR_MEAN_deseas)
 
+BR_NAIVE_deseas <- naive(BR_Temp_ts_deseas, h=36)
+plot(BR_NAIVE_deseas)
+
+BR_SMA_deseas_fit <- sma(y = BR_Temp_ts_deseas, h = 36, holdout = FALSE, silent = FALSE) #order=2
+summary(BR_SMA_deseas_fit)
+
+BR_deseas_fit=ses( y = BR_Temp_ts_deseas, h = 36, holdout = FALSE, silent = FALSE)
 
 ```
 
