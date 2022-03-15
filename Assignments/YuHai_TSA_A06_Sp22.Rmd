@@ -1,7 +1,7 @@
 ---
 title: "ENV 790.30 - Time Series Analysis for Energy Data | Spring 2021"
 subtitle: "Assignment 6 - Due date 03/16/22"
-author: "Student Name"
+author: "Yu Hai"
 output: pdf_document
 geometry: margin=2.54cm
 header-includes:
@@ -26,7 +26,8 @@ Packages needed for this assignment: "forecast","tseries". Do not forget to load
 
 ```{r}
 #Load/install required package here
-
+library(forecast)
+library(tseries)
 ```
 
 
@@ -50,6 +51,10 @@ Recall that the non-seasonal ARIMA is described by three parameters ARIMA$(p,d,q
 
 ```{r}
 
+ts1 <- arima.sim(list(order = c(1,0,0), ar = 0.6), n = 100)
+ts2 <- arima.sim(list(order = c(0,0,1), ma = 0.9), n = 100)
+ts3 <- arima.sim(list(order = c(1,0,1), ar = 0.6,ma=0.9), n = 100)
+ts.plot(ts1)
 ```
 
 
@@ -58,19 +63,25 @@ Recall that the non-seasonal ARIMA is described by three parameters ARIMA$(p,d,q
 \item Plot the sample ACF for each of these models in one window to facilitate comparison (Hint: use command $par(mfrow=c(1,3))$ that divides the plotting window in three columns).  
 
 ```{r}
-
+par(mfrow=c(1,3))
+Acf(ts1,main="ARMA(1,0)")
+Acf(ts2,main="ARMA(0,1)")
+Acf(ts3,main="ARMA(1,1)")
 ```
 
 
 \item Plot the sample PACF for each of these models in one window to facilitate comparison.  
 
 ```{r}
-
+par(mfrow=c(1,3))
+Pacf(ts1,main="ARMA(1,0)")
+Pacf(ts2,main="ARMA(0,1)")
+Pacf(ts3,main="ARMA(1,1)")
 ```
 
 \item Look at the ACFs and PACFs. Imagine you had these plots for a data set and you were asked to identify the model, i.e., is it AR, MA or ARMA and the order of each component. Would you be identify them correctly? Explain your answer.
 
-> Answer:
+> Answer: Yes. For ARMA (1,0) we can see a graduate decay in ACF and a cutoff at lag=1 in PACF, which measn it is a autoregression model with order=1. For ARMA (0,1), there is a cutoff at lag=1 in ACF while the PACF shows a graduate decay, so it is a moving average model with order=1. For ARMA (1,1), neither the ACF nor the PACF show graduate decay, thus we could identify it is an ARMA model, but we cannot know the order because there is no clear cutoff in ACF or PACF. 
 
 \item Compare the ACF and PACF values R computed with the theoretical values you provided for the coefficients. Do they match? Explain your answer.
 
@@ -80,7 +91,25 @@ Recall that the non-seasonal ARIMA is described by three parameters ARIMA$(p,d,q
 \item Increase number of observations to $n=1000$ and repeat parts (a)-(d).
 
 ```{r}
+ts4 <- arima.sim(list(order = c(1,0,0), ar = 0.6), n = 1000)
+ts5 <- arima.sim(list(order = c(0,0,1), ma = 0.9), n = 1000)
+ts6 <- arima.sim(list(order = c(1,0,1), ar = 0.6,ma=0.9), n = 1000)
+```
 
+```{r}
+#ACF
+par(mfrow=c(1,3))
+Acf(ts4,main="ARMA(1,0)")
+Acf(ts5,main="ARMA(0,1)")
+Acf(ts6,main="ARMA(1,1)")
+```
+
+```{r}
+#PACF
+par(mfrow=c(1,3))
+Pacf(ts4,main="ARMA(1,0)")
+Pacf(ts5,main="ARMA(0,1)")
+Pacf(ts6,main="ARMA(1,1)")
 ```
 
 \end{enumerate}
@@ -94,6 +123,12 @@ Consider the ARIMA model $y_t=0.7*y_{t-1}-0.25*y_{t-12}+a_t-0.1*a_{t-1}$
 \item Identify the model using the notation ARIMA$(p,d,q)(P,D,Q)_ s$, i.e., identify the integers $p,d,q,P,D,Q,s$ (if possible) from the equation.
 
 \item Also from the equation what are the values of the parameters, i.e., model coefficients. 
+```{r}
+#ARIMA(1,1,1)(0,1,1)
+#becuase it depends on y(t-1), so p=1, becuase it has seasonality, so d=1, because it depends on a(t-1), so q=1.
+#The autoregression coefficient is the coefficient before y(t-1), so it is 0.7, the moving average coefficient is the coefficient before a(t-1), which is -0.1. 
+#The seasonal autocorrelation is negative, so Q=1, because P+Q<=1, so P=0. The seasonal component s=12, 
+```
 
 \end{enumerate}
 ## Q4
