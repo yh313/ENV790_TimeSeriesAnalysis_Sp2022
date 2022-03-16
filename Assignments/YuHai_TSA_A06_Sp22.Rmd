@@ -2,11 +2,17 @@
 title: "ENV 790.30 - Time Series Analysis for Energy Data | Spring 2021"
 subtitle: "Assignment 6 - Due date 03/16/22"
 author: "Yu Hai"
-output: pdf_document
+output:
+  pdf_document:
+    latex_engine: xelatex
 geometry: margin=2.54cm
 header-includes:
+  \begin{document}
+  \usepackage{fvextra}
+  \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
   - \usepackage{enumerate}
   - \usepackage{enumitem}
+
 ---
   
 ## Directions
@@ -38,7 +44,7 @@ Describe the important characteristics of the sample autocorrelation function (A
 
 \item AR(2)
 
-> Answer: For autoregression model with order of 2, the ACF will decary exponentially with time, while the PACF will show a cutoff (huge decrease) at lag=2. 
+> Answer: For autoregression model with order of 2, the ACF will decary exponentially with time, while the PACF will show a cutoff (huge decrease to insignificance) at lag=2. 
 
 \item MA(1)
 
@@ -50,7 +56,6 @@ Describe the important characteristics of the sample autocorrelation function (A
 Recall that the non-seasonal ARIMA is described by three parameters ARIMA$(p,d,q)$ where $p$ is the order of the autoregressive component, $d$ is the number of times the series need to be differenced to obtain stationarity and $q$ is the order of the moving average component. If we don't need to difference the series, we don't need to specify the "I" part and we can use the short version, i.e., the ARMA$(p,q)$. Consider three models: ARMA(1,0), ARMA(0,1) and ARMA(1,1) with parameters $\phi=0.6$ and $\theta= 0.9$. The $\phi$ refers to the AR coefficient and the $\theta$ refers to the MA coefficient. Use R to generate $n=100$ observations from each of these three models
 
 ```{r}
-
 ts1 <- arima.sim(list(order = c(1,0,0), ar = 0.6), n = 100)
 ts2 <- arima.sim(list(order = c(0,0,1), ma = 0.9), n = 100)
 ts3 <- arima.sim(list(order = c(1,0,1), ar = 0.6,ma=0.9), n = 100)
@@ -81,11 +86,11 @@ Pacf(ts3,main="ARMA(1,1)")
 
 \item Look at the ACFs and PACFs. Imagine you had these plots for a data set and you were asked to identify the model, i.e., is it AR, MA or ARMA and the order of each component. Would you be identify them correctly? Explain your answer.
 
-> Answer: Yes. For ARMA (1,0) we can see a graduate decay in ACF and a cutoff at lag=1 in PACF, which measn it is a autoregression model with order=1. For ARMA (0,1), there is a cutoff at lag=1 in ACF while the PACF shows a graduate decay, so it is a moving average model with order=1. For ARMA (1,1), neither the ACF nor the PACF show graduate decay, thus we could identify it is an ARMA model, but we cannot know the order because there is no clear cutoff in ACF or PACF. 
+> Answer: Yes. For the first data set (ARMA (1,0)), we can see a graduate decay in ACF and a cutoff at lag=1 in PACF, which means it is a autoregression model with order=1. For the second data set (ARMA (0,1)), there is a cutoff at lag=1 in ACF while the PACF shows a graduate decay, so it is a moving average model with order=1. For the third data set (ARMA (1,1)), both the ACF and the PACF show graduate decay, thus we could identify it is an ARMA model, but we cannot know the order because the characteristics of autoregression and moving average models superimpose.
 
 \item Compare the ACF and PACF values R computed with the theoretical values you provided for the coefficients. Do they match? Explain your answer.
 
-> Answer: The value of PACF at lag 1 for the generated series matches the 0.6 coefficient for the autoregressive component. The order also matches the ACF at lag 1 because the order is 1. Smaller sample, harder to observe the match. for MA model, ACF, previous observations, but no information on previous error, so can't tell the coefficient of MA from ACF or PACF. 
+> Answer: The value of PACF at lag 1 for the generated series is around 0.6, matches the coefficient for the autoregressive component.For the MA model, because ACF and PACF only show the autocorrelations to previous observations, but not to previous errors, so we can't tell the coefficient of MA from ACF or PACF. For the same reason, the coefficients of ARMA model are not shown in ACF or PACF. 
 
 \item Increase number of observations to $n=1000$ and repeat parts (a)-(d).
 
@@ -110,6 +115,9 @@ Pacf(ts4,main="ARMA(1,0)")
 Pacf(ts5,main="ARMA(0,1)")
 Pacf(ts6,main="ARMA(1,1)")
 ```
+c.Yes. For the first data set (ARMA (1,0)), there is a graduate decay in ACF and a cutoff at lag=1 in PACF, which means it is a autoregression model with order=1. For the second data set (ARMA (0,1)), there is a cutoff at lag=1 in ACF while the PACF shows a graduate decay, so it is a moving average model with order=1. For the third data set (ARMA (1,1)), both the ACF and the PACF show graduate decay, thus we could identify it is an ARMA model, but we cannot identify the order because the characteristics of autoregression and moving average models superimpose.
+
+d. For ARMA (1,0), the value of PACF at lag 1 for the generated series is closer to 0.6 compared to the PACF of the time series with 100 observations. This value matches the coefficient for the autoregressive component, and indicate that this time series performs better than the time series with only 100 observations. For the MA model, because ACF and PACF only show the autocorrelations to previous observations, but not to previous errors, so we can't tell the coefficient of MA from ACF or PACF. For the same reason, we cannot tell the coefficients for ARMA model.
 
 \end{enumerate}
 
@@ -120,15 +128,11 @@ Consider the ARIMA model $y_t=0.7*y_{t-1}-0.25*y_{t-12}+a_t-0.1*a_{t-1}$
 \begin{enumerate}[label=(\alph*)]
 
 \item Identify the model using the notation ARIMA$(p,d,q)(P,D,Q)_ s$, i.e., identify the integers $p,d,q,P,D,Q,s$ (if possible) from the equation.
+> Answer:ARIMA(1,0,1)(1,0,0). The obsevation at time y=t only depends on y(t-1), so the order of autoregression model is 1 (i.e. p=1). It also depends on the error at time t-1(a(t-1)), so the order of moving average component is 1 as well (i.e.q=1). The seasonality is expressed as time t=12, so we know it is a monthly data, so s=12. It also depends on the observation at time t-12, so there is a seasonal autoregression component with order 1(P=1). Because P+Q<=1, so Q=0. The values of d and D cannot be determined from the equation, but because there is no miu (intercept constant), we can speculate that the time series has already been differenced, so both d and D are likely to be zero. 
 
-\item Also from the equation what are the values of the parameters, i.e., model coefficients. 
-```{r}
-#ARIMA(1,0,1)(0,0,1)
-#becuase it depends on y(t-1), so p=1, becuase it has seasonality, so d=1, because it depends on a(t-1), so q=1.
-#The autoregression coefficient is the coefficient before y(t-1), so it is 0.7, the moving average coefficient is the coefficient before a(t-1), which is -0.1. 
-#The seasonal autocorrelation is negative, so Q=1, because P+Q<=1, so P=0. The seasonal component s=12, 
-#The seasonal moving average coefficient is -0.25
-```
+\item Also from the equation what are the values of the parameters, i.e., model coefficients.
+> Answer: The autoregression coefficient is the coefficient before y(t-1), so it is 0.7, the moving average coefficient is the coefficient before a(t-1), which is -0.1. The coefficient before the SAR term is -0.25. 
+
 
 \end{enumerate}
 ## Q4
@@ -143,8 +147,7 @@ ts.plot(sarima_model)
 ```
 ```{r}
 par(mfrow=c(1,2))
-Acf(sarima_model)
-Pacf(sarima_model)
+Acf(sarima_model,main="SARMA(0,1)(1,0)")
+Pacf(sarima_model,main="SARMA(0,1)(1,0)")
 ```
-Cutoff at ACF at lag=1, MA (0,1)
-multiple spikes in ACF at seasonal lag, but single spike in PACF, so has seasonal autoregression
+> Answer: For non-seaonsl components, there is a clear cutoff in ACF at lag=1, but the PACF also shows a cutoff at lag=1, so from the ACF and PACF we cannot tell whether it is just a moving average model or an ARIMA model. If it is a moving average model, we can determine that it is with order of 1 (i.e. q=1). For seasonal component, there are multiple spikes in ACF at seasonal lag (12, 24), but only a single spike in PACF, so the time series has an seasonal autoregression component with order of 1. Because P+Q<=1, we can determine P=1, Q=0. And the d and D are given to be zero.  

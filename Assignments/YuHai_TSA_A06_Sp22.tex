@@ -1,0 +1,374 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={ENV 790.30 - Time Series Analysis for Energy Data \textbar{} Spring 2021},
+  pdfauthor={Yu Hai},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=2.54cm]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\begin{document} \usepackage{fvextra} \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}} - \usepackage{enumerate} - \usepackage{enumitem}
+\ifluatex
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+
+\title{ENV 790.30 - Time Series Analysis for Energy Data \textbar{}
+Spring 2021}
+\usepackage{etoolbox}
+\makeatletter
+\providecommand{\subtitle}[1]{% add subtitle to \maketitle
+  \apptocmd{\@title}{\par {\large #1 \par}}{}{}
+}
+\makeatother
+\subtitle{Assignment 6 - Due date 03/16/22}
+\author{Yu Hai}
+\date{}
+
+\begin{document}
+\maketitle
+
+\hypertarget{directions}{%
+\subsection{Directions}\label{directions}}
+
+You should open the .rmd file corresponding to this assignment on
+RStudio. The file is available on our class repository on Github. And to
+do so you will need to fork our repository and link it to your RStudio.
+
+Once you have the project open the first thing you will do is change
+``Student Name'' on line 3 with your name. Then you will start working
+through the assignment by \textbf{creating code and output} that answer
+each question. Be sure to use this assignment document. Your report
+should contain the answer to each question and any plots/tables you
+obtained (when applicable).
+
+When you have completed the assignment, \textbf{Knit} the text and code
+into a single PDF file. Rename the pdf file such that it includes your
+first and last name (e.g., ``LuanaLima\_TSA\_A06\_Sp22.Rmd''). Submit
+this pdf using Sakai.
+
+\hypertarget{questions}{%
+\subsection{Questions}\label{questions}}
+
+This assignment has general questions about ARIMA Models.
+
+Packages needed for this assignment: ``forecast'',``tseries''. Do not
+forget to load them before running your script, since they are NOT
+default packages.\textbackslash{}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Load/install required package here}
+\FunctionTok{library}\NormalTok{(forecast)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: 程辑包'forecast'是用R版本4.1.2 来建造的
+\end{verbatim}
+
+\begin{verbatim}
+## Registered S3 method overwritten by 'quantmod':
+##   method            from
+##   as.zoo.data.frame zoo
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(tseries)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: 程辑包'tseries'是用R版本4.1.2 来建造的
+\end{verbatim}
+
+\hypertarget{q1}{%
+\subsection{Q1}\label{q1}}
+
+Describe the important characteristics of the sample autocorrelation
+function (ACF) plot and the partial sample autocorrelation function
+(PACF) plot for the following models:
+
+\begin{enumerate}[label=(\alph*)]
+
+\item AR(2)
+
+> Answer: For autoregression model with order of 2, the ACF will decary exponentially with time, while the PACF will show a cutoff (huge decrease to insignificance) at lag=2. 
+
+\item MA(1)
+
+> Answer: For moving average model with order of 1, the ACF will show a cutoff at lag=1, while the PACF will decay exponentially with time. 
+
+\end{enumerate}
+
+\hypertarget{q2}{%
+\subsection{Q2}\label{q2}}
+
+Recall that the non-seasonal ARIMA is described by three parameters
+ARIMA\((p,d,q)\) where \(p\) is the order of the autoregressive
+component, \(d\) is the number of times the series need to be
+differenced to obtain stationarity and \(q\) is the order of the moving
+average component. If we don't need to difference the series, we don't
+need to specify the ``I'' part and we can use the short version, i.e.,
+the ARMA\((p,q)\). Consider three models: ARMA(1,0), ARMA(0,1) and
+ARMA(1,1) with parameters \(\phi=0.6\) and \(\theta= 0.9\). The \(\phi\)
+refers to the AR coefficient and the \(\theta\) refers to the MA
+coefficient. Use R to generate \(n=100\) observations from each of these
+three models
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ts1 }\OtherTok{\textless{}{-}} \FunctionTok{arima.sim}\NormalTok{(}\FunctionTok{list}\NormalTok{(}\AttributeTok{order =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{,}\DecValTok{0}\NormalTok{), }\AttributeTok{ar =} \FloatTok{0.6}\NormalTok{), }\AttributeTok{n =} \DecValTok{100}\NormalTok{)}
+\NormalTok{ts2 }\OtherTok{\textless{}{-}} \FunctionTok{arima.sim}\NormalTok{(}\FunctionTok{list}\NormalTok{(}\AttributeTok{order =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{0}\NormalTok{,}\DecValTok{1}\NormalTok{), }\AttributeTok{ma =} \FloatTok{0.9}\NormalTok{), }\AttributeTok{n =} \DecValTok{100}\NormalTok{)}
+\NormalTok{ts3 }\OtherTok{\textless{}{-}} \FunctionTok{arima.sim}\NormalTok{(}\FunctionTok{list}\NormalTok{(}\AttributeTok{order =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{0}\NormalTok{,}\DecValTok{1}\NormalTok{), }\AttributeTok{ar =} \FloatTok{0.6}\NormalTok{,}\AttributeTok{ma=}\FloatTok{0.9}\NormalTok{), }\AttributeTok{n =} \DecValTok{100}\NormalTok{)}
+\FunctionTok{ts.plot}\NormalTok{(ts1)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{YuHai_TSA_A06_Sp22_files/figure-latex/unnamed-chunk-2-1.pdf}
+
+\begin{enumerate}[label=(\alph*)]
+
+\item Plot the sample ACF for each of these models in one window to facilitate comparison (Hint: use command $par(mfrow=c(1,3))$ that divides the plotting window in three columns).  
+
+
+```r
+par(mfrow=c(1,3))
+Acf(ts1,main="ARMA(1,0)")
+Acf(ts2,main="ARMA(0,1)")
+Acf(ts3,main="ARMA(1,1)")
+```
+
+![](YuHai_TSA_A06_Sp22_files/figure-latex/unnamed-chunk-3-1.pdf)<!-- --> 
+
+
+\item Plot the sample PACF for each of these models in one window to facilitate comparison.  
+
+
+```r
+par(mfrow=c(1,3))
+Pacf(ts1,main="ARMA(1,0)")
+Pacf(ts2,main="ARMA(0,1)")
+Pacf(ts3,main="ARMA(1,1)")
+```
+
+![](YuHai_TSA_A06_Sp22_files/figure-latex/unnamed-chunk-4-1.pdf)<!-- --> 
+
+\item Look at the ACFs and PACFs. Imagine you had these plots for a data set and you were asked to identify the model, i.e., is it AR, MA or ARMA and the order of each component. Would you be identify them correctly? Explain your answer.
+
+> Answer: Yes. For the first data set (ARMA (1,0)), we can see a graduate decay in ACF and a cutoff at lag=1 in PACF, which means it is a autoregression model with order=1. For the second data set (ARMA (0,1)), there is a cutoff at lag=1 in ACF while the PACF shows a graduate decay, so it is a moving average model with order=1. For the third data set (ARMA (1,1)), both the ACF and the PACF show graduate decay, thus we could identify it is an ARMA model, but we cannot know the order because the characteristics of autoregression and moving average models superimpose.
+
+\item Compare the ACF and PACF values R computed with the theoretical values you provided for the coefficients. Do they match? Explain your answer.
+
+> Answer: The value of PACF at lag 1 for the generated series is around 0.6, matches the coefficient for the autoregressive component.For the MA model, because ACF and PACF only show the autocorrelations to previous observations, but not to previous errors, so we can't tell the coefficient of MA from ACF or PACF. For the same reason, the coefficients of ARMA model are not shown in ACF or PACF. 
+
+\item Increase number of observations to $n=1000$ and repeat parts (a)-(d).
+
+
+```r
+ts4 <- arima.sim(list(order = c(1,0,0), ar = 0.6), n = 1000)
+ts5 <- arima.sim(list(order = c(0,0,1), ma = 0.9), n = 1000)
+ts6 <- arima.sim(list(order = c(1,0,1), ar = 0.6,ma=0.9), n = 1000)
+```
+
+
+```r
+#ACF
+par(mfrow=c(1,3))
+Acf(ts4,main="ARMA(1,0)")
+Acf(ts5,main="ARMA(0,1)")
+Acf(ts6,main="ARMA(1,1)")
+```
+
+![](YuHai_TSA_A06_Sp22_files/figure-latex/unnamed-chunk-6-1.pdf)<!-- --> 
+
+
+```r
+#PACF
+par(mfrow=c(1,3))
+Pacf(ts4,main="ARMA(1,0)")
+Pacf(ts5,main="ARMA(0,1)")
+Pacf(ts6,main="ARMA(1,1)")
+```
+
+![](YuHai_TSA_A06_Sp22_files/figure-latex/unnamed-chunk-7-1.pdf)<!-- --> 
+c.Yes. For the first data set (ARMA (1,0)), there is a graduate decay in ACF and a cutoff at lag=1 in PACF, which means it is a autoregression model with order=1. For the second data set (ARMA (0,1)), there is a cutoff at lag=1 in ACF while the PACF shows a graduate decay, so it is a moving average model with order=1. For the third data set (ARMA (1,1)), both the ACF and the PACF show graduate decay, thus we could identify it is an ARMA model, but we cannot identify the order because the characteristics of autoregression and moving average models superimpose.
+
+d. For ARMA (1,0), the value of PACF at lag 1 for the generated series is closer to 0.6 compared to the PACF of the time series with 100 observations. This value matches the coefficient for the autoregressive component, and indicate that this time series performs better than the time series with only 100 observations. For the MA model, because ACF and PACF only show the autocorrelations to previous observations, but not to previous errors, so we can't tell the coefficient of MA from ACF or PACF. For the same reason, we cannot tell the coefficients for ARMA model.
+
+\end{enumerate}
+
+\hypertarget{q3}{%
+\subsection{Q3}\label{q3}}
+
+Consider the ARIMA model
+\(y_t=0.7*y_{t-1}-0.25*y_{t-12}+a_t-0.1*a_{t-1}\)
+
+\begin{enumerate}[label=(\alph*)]
+
+\item Identify the model using the notation ARIMA$(p,d,q)(P,D,Q)_ s$, i.e., identify the integers $p,d,q,P,D,Q,s$ (if possible) from the equation.
+> Answer:ARIMA(1,0,1)(1,0,0). The obsevation at time y=t only depends on y(t-1), so the order of autoregression model is 1 (i.e. p=1). It also depends on the error at time t-1(a(t-1)), so the order of moving average component is 1 as well (i.e.q=1). The seasonality is expressed as time t=12, so we know it is a monthly data, so s=12. It also depends on the observation at time t-12, so there is a seasonal autoregression component with order 1(P=1). Because P+Q<=1, so Q=0. The values of d and D cannot be determined from the equation, but because there is no miu (intercept constant), we can speculate that the time series has already been differenced, so both d and D are likely to be zero. 
+
+\item Also from the equation what are the values of the parameters, i.e., model coefficients.
+> Answer: The autoregression coefficient is the coefficient before y(t-1), so it is 0.7, the moving average coefficient is the coefficient before a(t-1), which is -0.1. The coefficient before the SAR term is -0.25. 
+
+
+\end{enumerate}
+
+\hypertarget{q4}{%
+\subsection{Q4}\label{q4}}
+
+Plot the ACF and PACF of a seasonal ARIMA\((0, 1)\times(1, 0)_{12}\)
+model with \(\phi =0 .8\) and \(\theta = 0.5\) using R. The \(12\) after
+the bracket tells you that \(s=12\), i.e., the seasonal lag is 12,
+suggesting monthly data whose behavior is repeated every 12 months. You
+can generate as many observations as you like. Note the Integrated part
+was omitted. It means the series do not need differencing, therefore
+\(d=D=0\). Plot ACF and PACF for the simulated data. Comment if the
+plots are well representing the model you simulated, i.e., would you be
+able to identify the order of both non-seasonal and seasonal components
+from the plots? Explain.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(stats4)}
+\FunctionTok{library}\NormalTok{(sarima)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: 程辑包'sarima'是用R版本4.1.3 来建造的
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## 载入程辑包：'sarima'
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:stats':
+## 
+##     spectrum
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sarima\_model }\OtherTok{\textless{}{-}} \FunctionTok{sim\_sarima}\NormalTok{(}\AttributeTok{model=}\FunctionTok{list}\NormalTok{(}\AttributeTok{ma=}\FloatTok{0.5}\NormalTok{,}\AttributeTok{sar=}\FloatTok{0.8}\NormalTok{, }\AttributeTok{nseasons=}\DecValTok{12}\NormalTok{), }\AttributeTok{n=}\DecValTok{1000}\NormalTok{) }
+\FunctionTok{ts.plot}\NormalTok{(sarima\_model)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{YuHai_TSA_A06_Sp22_files/figure-latex/unnamed-chunk-8-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow=}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+\FunctionTok{Acf}\NormalTok{(sarima\_model,}\AttributeTok{main=}\StringTok{"SARMA(0,1)(1,0)"}\NormalTok{)}
+\FunctionTok{Pacf}\NormalTok{(sarima\_model,}\AttributeTok{main=}\StringTok{"SARMA(0,1)(1,0)"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{YuHai_TSA_A06_Sp22_files/figure-latex/unnamed-chunk-9-1.pdf}
+\textgreater{} Answer: For non-seaonsl components, there is a clear
+cutoff in ACF at lag=1, but the PACF also shows a cutoff at lag=1, so
+from the ACF and PACF we cannot tell whether it is just a moving average
+model or an ARIMA model. If it is a moving average model, we can
+determine that it is with order of 1 (i.e.~q=1). For seasonal component,
+there are multiple spikes in ACF at seasonal lag (12, 24), but only a
+single spike in PACF, so the time series has an seasonal autoregression
+component with order of 1. Because P+Q\textless=1, we can determine P=1,
+Q=0. And the d and D are given to be zero.
+
+\end{document}
