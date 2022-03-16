@@ -85,8 +85,7 @@ Pacf(ts3,main="ARMA(1,1)")
 
 \item Compare the ACF and PACF values R computed with the theoretical values you provided for the coefficients. Do they match? Explain your answer.
 
-> Answer: 
-
+> Answer: The value of PACF at lag 1 for the generated series matches the 0.6 coefficient for the autoregressive component. The order also matches the ACF at lag 1 because the order is 1. Smaller sample, harder to observe the match. for MA model, ACF, previous observations, but no information on previous error, so can't tell the coefficient of MA from ACF or PACF. 
 
 \item Increase number of observations to $n=1000$ and repeat parts (a)-(d).
 
@@ -124,10 +123,11 @@ Consider the ARIMA model $y_t=0.7*y_{t-1}-0.25*y_{t-12}+a_t-0.1*a_{t-1}$
 
 \item Also from the equation what are the values of the parameters, i.e., model coefficients. 
 ```{r}
-#ARIMA(1,1,1)(0,1,1)
+#ARIMA(1,0,1)(0,0,1)
 #becuase it depends on y(t-1), so p=1, becuase it has seasonality, so d=1, because it depends on a(t-1), so q=1.
 #The autoregression coefficient is the coefficient before y(t-1), so it is 0.7, the moving average coefficient is the coefficient before a(t-1), which is -0.1. 
 #The seasonal autocorrelation is negative, so Q=1, because P+Q<=1, so P=0. The seasonal component s=12, 
+#The seasonal moving average coefficient is -0.25
 ```
 
 \end{enumerate}
@@ -136,6 +136,15 @@ Consider the ARIMA model $y_t=0.7*y_{t-1}-0.25*y_{t-12}+a_t-0.1*a_{t-1}$
 Plot the ACF and PACF of a seasonal ARIMA$(0, 1)\times(1, 0)_{12}$ model with $\phi =0 .8$ and $\theta = 0.5$ using R. The $12$ after the bracket tells you that $s=12$, i.e., the seasonal lag is 12, suggesting monthly data whose behavior is repeated every 12 months. You can generate as many observations as you like. Note the Integrated part was omitted. It means the series do not need differencing, therefore $d=D=0$. Plot ACF and PACF for the simulated data. Comment if the plots are well representing the model you simulated, i.e., would you be able to identify the order of both non-seasonal and seasonal components from the plots? Explain.
 
 ```{r}
-
+library(stats4)
+library(sarima)
+sarima_model <- sim_sarima(model=list(ma=0.5,sar=0.8, nseasons=12), n=1000) 
+ts.plot(sarima_model)
 ```
-
+```{r}
+par(mfrow=c(1,2))
+Acf(sarima_model)
+Pacf(sarima_model)
+```
+Cutoff at ACF at lag=1, MA (0,1)
+multiple spikes in ACF at seasonal lag, but single spike in PACF, so has seasonal autoregression
