@@ -7,9 +7,6 @@ output:
     latex_engine: xelatex
 geometry: margin=2.54cm
 header-includes:
-  \begin{document}
-  \usepackage{fvextra}
-  \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
   - \usepackage{enumerate}
   - \usepackage{enumitem}
 
@@ -86,7 +83,7 @@ Pacf(ts3,main="ARMA(1,1)")
 
 \item Look at the ACFs and PACFs. Imagine you had these plots for a data set and you were asked to identify the model, i.e., is it AR, MA or ARMA and the order of each component. Would you be identify them correctly? Explain your answer.
 
-> Answer: Yes. For the first data set (ARMA (1,0)), we can see a graduate decay in ACF and a cutoff at lag=1 in PACF, which means it is a autoregression model with order=1. For the second data set (ARMA (0,1)), there is a cutoff at lag=1 in ACF while the PACF shows a graduate decay, so it is a moving average model with order=1. For the third data set (ARMA (1,1)), both the ACF and the PACF show graduate decay, thus we could identify it is an ARMA model, but we cannot know the order because the characteristics of autoregression and moving average models superimpose.
+> Answer: Yes. For the first data set (ARMA (1,0)), we can see a graduate decay in ACF and a cutoff at lag=1 in PACF, which means it is a autoregression model with order=1. For the second data set (ARMA (0,1)), there is a cutoff at lag=1 in ACF while the PACF shows a graduate decay, so it is a moving average model with order=1. For the third data set (ARMA (1,1)), both the ACF and the PACF show graduate decay, thus we could identify it is an ARMA model, but we cannot know the order because the characteristics of autoregression and moving average models superimpose. (Because there is no set seed, when running the code, new plots may be generated and the comments may not applied to new plots. Same for all questions below.)
 
 \item Compare the ACF and PACF values R computed with the theoretical values you provided for the coefficients. Do they match? Explain your answer.
 
